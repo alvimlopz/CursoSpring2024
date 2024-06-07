@@ -4,6 +4,9 @@ import java.util.Date;
 
 import com.example.demo.domain.enums.EstadoPagamento;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class PagamentoComBoleto extends Pagamento {
 
 	private static final long serialVersionUID = 1L;
