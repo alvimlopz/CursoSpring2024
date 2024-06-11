@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.ObjectNotFoundException;
@@ -43,6 +44,10 @@ public class CategoriaService {
 			throw new DataIntegrityException("Não e possivel excluir uma categoria que possue produtos");
 		}
 		
+	}
+
+	public List<Categoria> findAll() {
+		return repo.findAll();
 	}
 	
 }
