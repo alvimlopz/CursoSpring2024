@@ -1,5 +1,6 @@
 package com.example.demo.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,9 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.example.demo.domain.Categoria;
 import com.example.demo.domain.Cliente;
+import com.example.demo.dto.CategoriaDTO;
 import com.example.demo.dto.ClienteDTO;
+import com.example.demo.dto.ClinteNewDTO;
 import com.example.demo.repositories.ClienteRepository;
 import com.example.demo.services.ClienteService;
 
@@ -65,4 +70,13 @@ public class ClienteResources {
 		Page<ClienteDTO> listDTO = list.map(obj -> new ClienteDTO(obj));
 		return ResponseEntity.ok().body(listDTO);	
 	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClinteNewDTO objDTO) throws IllegalAccessException{
+		Cliente obj = clienteService.fromDTO(objDTO);
+		obj = clienteService.insert(obj);
+		//pega a Uri do novo recurso que foi inserido
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).build();
+		}
 }

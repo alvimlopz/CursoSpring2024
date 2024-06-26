@@ -11,8 +11,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.domain.Cidade;
 import com.example.demo.domain.Cliente;
+import com.example.demo.domain.Endereco;
+import com.example.demo.domain.enums.TipoCliente;
 import com.example.demo.dto.ClienteDTO;
+import com.example.demo.dto.ClinteNewDTO;
+import com.example.demo.repositories.CidadeRepository;
 import com.example.demo.repositories.ClienteRepository;
 import com.example.demo.services.exceptions.DataIntegrityException;
 
@@ -21,6 +26,9 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private CidadeRepository cidadeRepository;
 
 	public Cliente buscar(Integer id) {
 		Optional<Cliente> obj = clienteRepository.findById(id);
@@ -68,4 +76,24 @@ public class ClienteService {
 		return clienteRepository.findAll(pageRequest);
 	}
 
+	
+	public Cliente insert(Cliente obj) {
+		obj.setId(null);
+		return clienteRepository.save(obj);
+	}
+	
+	public Cliente fromDTO(ClinteNewDTO objDTO) throws IllegalAccessException {
+		Cliente cli = new Cliente(null, objDTO.getNome(), objDTO.getEmail(), objDTO.getCpfOuCnpj(), TipoCliente.toEnum(objDTO.getTipo()));
+		Cidade cid = (Cidade) cidadeRepository.findAll();
+		Endereco end = new Endereco(null, objDTO.getLogradouro(), objDTO.getNumero(), objDTO.getComplemento(), objDTO.getBairro(), objDTO.getCep(), cli, cid);
+		cli.getEnderecos().add(end);
+		cli.getTelefones().add(objDTO.getTelefone1());
+		if(objDTO.getTelefone2() != null ) {
+			cli.getTelefones().add(objDTO.getTelefone2());
+		}
+		if(objDTO.getTelefone3() != null ) {
+			cli.getTelefones().add(objDTO.getTelefone3());
+		}
+		return cli;
+	}
 }
