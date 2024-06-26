@@ -19,7 +19,10 @@ import com.example.demo.dto.ClienteDTO;
 import com.example.demo.dto.ClinteNewDTO;
 import com.example.demo.repositories.CidadeRepository;
 import com.example.demo.repositories.ClienteRepository;
+import com.example.demo.repositories.EnderecoRepository;
 import com.example.demo.services.exceptions.DataIntegrityException;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ClienteService {
@@ -29,6 +32,9 @@ public class ClienteService {
 	
 	@Autowired
 	private CidadeRepository cidadeRepository;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	public Cliente buscar(Integer id) {
 		Optional<Cliente> obj = clienteRepository.findById(id);
@@ -75,16 +81,20 @@ public class ClienteService {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
 		return clienteRepository.findAll(pageRequest);
 	}
-
 	
+
+	@Transactional
 	public Cliente insert(Cliente obj) {
 		obj.setId(null);
-		return clienteRepository.save(obj);
+		obj =  clienteRepository.save(obj);
+		enderecoRepository.saveAll(obj.getEnderecos());
+		return obj;
 	}
+	
 	
 	public Cliente fromDTO(ClinteNewDTO objDTO) throws IllegalAccessException {
 		Cliente cli = new Cliente(null, objDTO.getNome(), objDTO.getEmail(), objDTO.getCpfOuCnpj(), TipoCliente.toEnum(objDTO.getTipo()));
-		Cidade cid = (Cidade) cidadeRepository.findAll();
+		Cidade cid = new Cidade(objDTO.getCidadeId(), null, null);
 		Endereco end = new Endereco(null, objDTO.getLogradouro(), objDTO.getNumero(), objDTO.getComplemento(), objDTO.getBairro(), objDTO.getCep(), cli, cid);
 		cli.getEnderecos().add(end);
 		cli.getTelefones().add(objDTO.getTelefone1());
