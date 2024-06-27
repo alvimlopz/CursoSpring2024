@@ -2,20 +2,37 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.Length;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+
 public class ClinteNewDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	@NotEmpty(message = "Prenchimento obrigatorio")
+	@Length(min = 5, max= 120, message = "Otamanho deve ser entre 5 e 120 caracteres")
 	private String nome;
+	
+	@NotEmpty(message = "Prenchimento obrigatorio")
+	@Email(message = "Email invalido")
 	private String email;
+	
+	@NotEmpty(message = "Prenchimento obrigatorio")
 	private String cpfOuCnpj;
 	private Integer tipo;
 
+	@NotEmpty(message = "Prenchimento obrigatorio")
 	private String logradouro;
+	@NotEmpty(message = "Prenchimento obrigatorio")
 	private String numero;
+	
 	private String complemento;
 	private String bairro;
+	@NotEmpty(message = "Prenchimento obrigatorio")
 	private String cep;
 
+	@NotEmpty(message = "Prenchimento obrigatorio")
 	private String telefone1;
 	private String telefone2;
 	private String telefone3;
