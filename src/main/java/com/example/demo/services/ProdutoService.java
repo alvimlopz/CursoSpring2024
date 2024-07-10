@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.domain.Categoria;
+import com.example.demo.domain.ItemPedido;
 import com.example.demo.domain.Produto;
 import com.example.demo.repositories.CategoriaRepository;
 import com.example.demo.repositories.ProdutoRepository;
@@ -36,6 +37,8 @@ public class ProdutoService {
 	    return repo.search(nome, categorias, pageRequest);
 		
 	}
+
+
 
 	
 }
